@@ -1,6 +1,7 @@
 <template>
   <div class="echo-scanner-guide" data-test-scanner-guide>
-    <div class="flex items-center justify-between gap-2 mb-3">
+    <!-- pr-8 keeps the button clear of the dialog's corner X. -->
+    <div class="flex items-center justify-between gap-2 mb-3 pr-8">
       <h2 class="text-xl font-bold">How to scan your echoes</h2>
       <button type="button" class="btn btn-sm" @click="emit('close')">
         {{ closeLabel }}

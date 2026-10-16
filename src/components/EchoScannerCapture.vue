@@ -5,7 +5,8 @@
     </template>
 
     <template v-else-if="status === 'idle' || status === 'error'">
-      <div class="flex flex-wrap items-center justify-between gap-2">
+      <!-- pr-8 keeps "How to scan" clear of the dialog's corner X. -->
+      <div class="flex flex-wrap items-center justify-between gap-2 pr-8">
         <h2 class="text-xl font-bold">Scan echoes from the game</h2>
         <button type="button" class="btn btn-ghost btn-sm" @click="showGuide = true">
           <svg
