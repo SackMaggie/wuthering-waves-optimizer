@@ -51,6 +51,14 @@
       </div>
     </div>
 
+    <OptimizerWorkspaceTradeoffChart
+      :character="character"
+      :rows="resultList"
+      :character-element="characterElement"
+      :selected-index="selectedIndex"
+      :format-value="formatValue"
+      @select="selectedIndex = $event"></OptimizerWorkspaceTradeoffChart>
+
     <OptimizerWorkspaceSpotlight
       v-if="selectedResult"
       :key="selectedResult.id"
@@ -78,6 +86,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import OptimizerWorkspaceSpotlight from "./OptimizerWorkspaceSpotlight.vue";
+import OptimizerWorkspaceTradeoffChart from "./OptimizerWorkspaceTradeoffChart.vue";
 import OptimizerWorkspaceEchoAvatarStack from "./OptimizerWorkspaceEchoAvatarStack.vue";
 import { formatOptimizerElapsed } from "./formatElapsed";
 import { displayInt, displayPercentage } from "../../utils/numbers";
