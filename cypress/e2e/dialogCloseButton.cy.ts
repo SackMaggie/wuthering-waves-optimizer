@@ -31,4 +31,19 @@ describe("Dialog close button", () => {
     cy.get('.modal[open] .modal-box > form[method="dialog"] .btn-circle').click();
     cy.get(".modal[open]").should("not.exist");
   });
+
+  // The weights editor's close form closes the dialog on click, so anything of the X's that
+  // reaches into the content would close it here.
+  it("leaves the dialog open when clicking just below the top of the box", () => {
+    cy.visit("/");
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get('[data-test="calculator-echoes-overflow-menu"]').filter(":visible").click();
+    cy.contains("button", "Customize Weights").click();
+
+    // 8px into the content (below the 1.5rem padding), mid-width, away from the X.
+    cy.get(".modal[open] .modal-box").then(($box) => {
+      cy.wrap($box).click($box[0].clientWidth / 2, 24 + 8);
+    });
+    cy.get(".modal[open] .modal-box").should("be.visible");
+  });
 });

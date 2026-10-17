@@ -70,7 +70,10 @@ h6 {
 /* Dialog close (X) buttons sit `absolute right-2 top-2` inside .modal-box, which is the
  * scrolling element, so on long dialogs the X scrolled away. Pin its form to the top of the
  * box instead (sticky top is measured inside the box padding, so 0 keeps it where it starts)
- * and pull the X back out to the corner. */
+ * and pull the X back out to the corner.
+ * Requires: the box keeps daisyUI's default 1.5rem padding (the -1rem offsets are
+ * top-2/right-2 minus that padding), and the X's form is the box's first child (sticky
+ * keeps the X where its form sits). */
 .modal-box > form[method="dialog"]:has(> .btn-circle.absolute) {
   position: sticky;
   top: 0;
@@ -80,30 +83,26 @@ h6 {
 .modal-box > form[method="dialog"]:has(> .btn-circle.absolute) > .btn-circle.absolute {
   top: -1rem;
   right: -1rem;
-  /* Fallback without scroll-driven animations: a solid X stays readable over content. */
+}
+/* A solid disc behind the X (under the ghost hover colour) so it stays readable over the
+ * content scrolling past. It only covers the button itself. */
+.modal-box > form[method="dialog"]:has(> .btn-circle.absolute) > .btn-circle.absolute::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
   background-color: var(--fallback-b1, oklch(var(--b1) / 1));
 }
+/* Where scroll-driven animations exist, the disc fades in over the first 1rem of scrolling. */
 @supports (animation-timeline: scroll()) {
-  .modal-box > form[method="dialog"]:has(> .btn-circle.absolute) > .btn-circle.absolute {
-    background-color: transparent;
-  }
-  /* Strip across the box's top edge (1.5rem = box padding), invisible at the top and
-   * faded in over the first 1rem of scrolling. */
-  .modal-box > form[method="dialog"]:has(> .btn-circle.absolute)::before {
-    content: "";
-    position: absolute;
-    top: -1.5rem;
-    left: -1.5rem;
-    right: -1.5rem;
-    height: 3rem;
-    background-color: var(--fallback-b1, oklch(var(--b1) / 1));
-    box-shadow: 0 1px 0 var(--fallback-bc, oklch(var(--bc) / 0.1));
+  .modal-box > form[method="dialog"]:has(> .btn-circle.absolute) > .btn-circle.absolute::before {
     opacity: 0;
-    animation: modal-close-strip linear both;
+    animation: modal-close-disc linear both;
     animation-timeline: scroll(nearest);
     animation-range: 0 1rem;
   }
-  @keyframes modal-close-strip {
+  @keyframes modal-close-disc {
     to {
       opacity: 1;
     }
