@@ -31,7 +31,7 @@
             </button>
             <button type="button" class="btn btn-sm btn-ghost" @click="resetFilters">Clear</button>
           </div>
-          <EchoSetToggles :sets="echoSets" :selected="pickerSets" @toggle="togglePickerSet" />
+          <EchoSetToggles v-model="pickerSets" :sets="echoSets" />
         </div>
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
           <template v-if="!allEchoesListFiltered.length">
@@ -103,10 +103,10 @@
           </p>
         </div>
         <EchoSetToggles
+          v-model="setFilters"
           :sets="echoSets"
-          :selected="setFilters"
           data-test-optimizer-workspace-echo-sets
-          @toggle="toggleSetFilter" />
+          @update:model-value="syncOptimizerConfig" />
 
         <div class="divider my-0"></div>
 
@@ -512,13 +512,6 @@ watch(recommendedSets, (sets) => {
   if (!setFilters.value.length) setFilters.value = [...sets];
 });
 
-function toggleSetFilter(set: string) {
-  const index = setFilters.value.findIndex((setFilter) => setFilter === set);
-  if (index >= 0) setFilters.value.splice(index, 1);
-  else setFilters.value.push(set);
-  void syncOptimizerConfig();
-}
-
 function handleUpdatedTarget(target: unknown) {
   optimizationTarget.value = target;
   void syncOptimizerConfig();
@@ -556,15 +549,8 @@ function openEchoChooser() {
 }
 
 function closeEchoChooser() {
-  resetFilters();
   const modalEl = document.getElementById(modalIdPicker);
   (modalEl as HTMLDialogElement | null)?.close();
-}
-
-function togglePickerSet(set: string) {
-  pickerSets.value = pickerSets.value.includes(set)
-    ? pickerSets.value.filter((selected) => selected !== set)
-    : [...pickerSets.value, set];
 }
 
 function resetFilters() {

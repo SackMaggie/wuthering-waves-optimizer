@@ -8,7 +8,7 @@ const toggle = (container: Element, set: string) =>
 describe("EchoSetToggles", () => {
   it("shows every set at full colour while none is selected", () => {
     const { container } = render(EchoSetToggles, {
-      props: { sets: ["FreezingFrost", "MoltenRift"], selected: [] },
+      props: { sets: ["FreezingFrost", "MoltenRift"], modelValue: [] },
     });
     for (const set of ["FreezingFrost", "MoltenRift"]) {
       expect(toggle(container, set).className).not.toContain("opacity-40");
@@ -18,7 +18,7 @@ describe("EchoSetToggles", () => {
 
   it("boxes the selected sets and greys out the rest", () => {
     const { container } = render(EchoSetToggles, {
-      props: { sets: ["FreezingFrost", "MoltenRift", "VoidThunder"], selected: ["MoltenRift"] },
+      props: { sets: ["FreezingFrost", "MoltenRift", "VoidThunder"], modelValue: ["MoltenRift"] },
     });
     expect(toggle(container, "MoltenRift").className).toContain("border-primary");
     expect(toggle(container, "MoltenRift").getAttribute("aria-pressed")).toBe("true");
@@ -26,11 +26,12 @@ describe("EchoSetToggles", () => {
     expect(toggle(container, "VoidThunder").getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("reports which set was clicked", async () => {
+  it("adds a clicked set to the selection, and removes it on a second click", async () => {
     const { container, emitted } = render(EchoSetToggles, {
-      props: { sets: ["FreezingFrost", "MoltenRift"], selected: [] },
+      props: { sets: ["FreezingFrost", "MoltenRift"], modelValue: ["FreezingFrost"] },
     });
     await fireEvent.click(toggle(container, "MoltenRift"));
-    expect(emitted().toggle).toEqual([["MoltenRift"]]);
+    await fireEvent.click(toggle(container, "FreezingFrost"));
+    expect(emitted()["update:modelValue"]).toEqual([[["FreezingFrost", "MoltenRift"]], [["MoltenRift"]]]);
   });
 });

@@ -255,7 +255,7 @@
       <!-- Sets last -->
       <div class="echoes__filters__row flex flex-wrap items-center gap-2">
         <span class="text-xs font-medium opacity-60 mr-1">Set</span>
-        <EchoSetToggles :sets="echoSetsList" :selected="echoSetFilter" @toggle="toggleEchoSetFilter" />
+        <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" />
       </div>
     </AppFilterPanel>
     <AppBulkActionBar
@@ -959,11 +959,6 @@ const substatFilterOptions = buildSimpleSelectOptions(subStats, (stat) =>
   getReadableSubStatLabel(String(stat)),
 );
 
-function toggleEchoSetFilter(set: string) {
-  echoSetFilter.value = echoSetFilter.value.includes(set)
-    ? echoSetFilter.value.filter((selected) => selected !== set)
-    : [...echoSetFilter.value, set];
-}
 
 function echoCardBinder(e: InventoryEchoRow) {
   const str = (v: unknown) => (v == null ? "" : String(v));

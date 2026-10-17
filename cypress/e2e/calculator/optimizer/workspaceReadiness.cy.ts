@@ -107,7 +107,8 @@ describe("Optimizer Workspace: setup readiness", () => {
     cy.viewport(1440, 900);
     openOptimizer();
     cy.viewport(390, 844);
-    cy.get("[data-test-optimizer-workspace-run-bar-summary]").should("contain.text", "2 to fix");
+    // Carlotta's recommended set is already selected, so only the main echo is left.
+    cy.get("[data-test-optimizer-workspace-run-bar-summary]").should("contain.text", "1 to fix");
     cy.screenshot("optimizer-readiness-phone", { capture: "viewport" });
   });
 });

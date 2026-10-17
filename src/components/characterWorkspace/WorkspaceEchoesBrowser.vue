@@ -111,7 +111,7 @@
             @click="toggleRecommendedSets">
             Recommended
           </button>
-          <EchoSetToggles :sets="echoSetsList" :selected="echoSetFilter" @toggle="toggleEchoSetFilter" />
+          <EchoSetToggles v-model="echoSetFilter" :sets="echoSetsList" />
         </div>
       </AppFilterPanel>
 
@@ -584,11 +584,6 @@ function resetFilters() {
   ratingMax.value = RATING_PERCENT_MAX;
 }
 
-function toggleEchoSetFilter(set: string) {
-  echoSetFilter.value = echoSetFilter.value.includes(set)
-    ? echoSetFilter.value.filter((selected) => selected !== set)
-    : [...echoSetFilter.value, set];
-}
 function toggleRecommendedSets() {
   echoSetFilter.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];
 }

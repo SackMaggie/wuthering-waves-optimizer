@@ -6,10 +6,10 @@
       type="button"
       class="rounded-lg p-1.5 border-2 transition-opacity"
       :class="toggleClass(set)"
-      :aria-pressed="isSelected(set)"
+      :aria-pressed="selected.includes(set)"
       :aria-label="getEchoSetLabelByType(set) ?? set"
       :data-test-echo-set-toggle="set"
-      @click="emit('toggle', set)">
+      @click="toggle(set)">
       <img :src="getEchoSetIconByType(set)" :alt="set" class="size-7" />
     </button>
   </div>
@@ -25,21 +25,18 @@ import { getEchoSetIconByType, getEchoSetLabelByType } from "../echoes/stats";
  */
 defineOptions({ name: "EchoSetToggles" });
 
-const props = defineProps<{
-  sets: string[];
-  selected: string[];
-}>();
+defineProps<{ sets: string[] }>();
+/** The selected sets (v-model). */
+const selected = defineModel<string[]>({ required: true });
 
-const emit = defineEmits<{
-  toggle: [set: string];
-}>();
-
-function isSelected(set: string) {
-  return props.selected.includes(set);
+function toggle(set: string) {
+  selected.value = selected.value.includes(set)
+    ? selected.value.filter((chosen) => chosen !== set)
+    : [...selected.value, set];
 }
 
 function toggleClass(set: string) {
-  if (isSelected(set)) return "border-primary opacity-100";
-  return props.selected.length ? "border-transparent opacity-40 hover:opacity-70" : "border-transparent";
+  if (selected.value.includes(set)) return "border-primary opacity-100";
+  return selected.value.length ? "border-transparent opacity-40 hover:opacity-70" : "border-transparent";
 }
 </script>
