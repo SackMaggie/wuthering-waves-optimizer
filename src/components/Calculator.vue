@@ -144,6 +144,7 @@
         <CalculatorEchoes
           :key="characterBuildKey"
           :character="character"
+          :suggested-echo-sets="chosenChar.value?.basic?.suggestedEchoSets"
           @update-stats="updateStatsEchoes"
           @updated-main-echo="handleUpdatedMainEcho"
           @updated-main-echo-rank="

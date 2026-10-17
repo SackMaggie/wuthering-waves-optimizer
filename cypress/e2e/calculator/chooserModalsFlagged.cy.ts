@@ -94,13 +94,20 @@ function visitWithTwoSetInventory() {
 }
 
 describe("v3 chooser modals (liveResultBar flag)", () => {
-  it("filters owned echoes by several sets at once", () => {
+  it("filters owned echoes by several sets at once, or by the character's recommended sets", () => {
     visitWithTwoSetInventory();
-    cy.selectWorkspaceCharacter("Carlotta");
+    // Roccia recommends Midnight Veil, then Moonlit Clouds (basic.ts suggestedEchoSets).
+    cy.selectWorkspaceCharacter("Roccia");
     cy.get('[data-test-calculator-nav="echoes"]').click();
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
     const count = () => cy.get("[data-test-workspace-echoes-browser-count]");
+    count().should("contain.text", "3 echoes");
+
+    cy.get("[data-test-workspace-echoes-browser-set]").first().should("have.attr", "data-test-workspace-echoes-browser-set", "MidnightVeil");
+    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
+    count().should("contain.text", "1 echo");
+    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     count().should("contain.text", "3 echoes");
 
     cy.get('[data-test-workspace-echoes-browser-set="FreezingFrost"]').click({ force: true });

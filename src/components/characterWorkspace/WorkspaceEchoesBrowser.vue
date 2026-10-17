@@ -101,6 +101,16 @@
 
         <div class="flex flex-wrap items-center gap-2">
           <span class="text-xs font-medium opacity-60 mr-1">Set</span>
+          <button
+            v-if="recommendedSets.length"
+            type="button"
+            class="btn btn-sm btn-ghost rounded px-2"
+            :class="{ 'btn-active': isRecommendedSetFilter }"
+            v-tooltip="recommendedSetsTooltip"
+            data-test-workspace-echoes-browser-recommended-sets
+            @click="toggleRecommendedSets">
+            Recommended
+          </button>
           <div
             class="echo-filters__sets flex flex-wrap"
             :class="{ 'echo-filters__sets--active': echoSetFilter.length > 0 }">
@@ -249,7 +259,7 @@ import { useEchoSlotAssignment } from "../../composables/useEchoSlotAssignment";
 
 const { showToast } = useToast();
 const { isCompact } = useUiDensity();
-const props = defineProps<{ character: string }>();
+const props = defineProps<{ character: string; suggestedEchoSets?: string[] }>();
 const emit = defineEmits<{ "chosen-echo-inventory": [] }>();
 
 const inventoryStore = useInventoryStore();
@@ -319,7 +329,22 @@ watch(
   },
 );
 
-const echoSetsList = computed(() => Object.keys(echoSetLabelMap));
+// The character's recommended sets (only ones the app knows) lead the row.
+const recommendedSets = computed(() =>
+  (props.suggestedEchoSets ?? []).filter((set) => set in echoSetLabelMap),
+);
+const echoSetsList = computed(() => [
+  ...recommendedSets.value,
+  ...Object.keys(echoSetLabelMap).filter((set) => !recommendedSets.value.includes(set)),
+]);
+const isRecommendedSetFilter = computed(
+  () =>
+    echoSetFilter.value.length === recommendedSets.value.length &&
+    recommendedSets.value.every((set) => echoSetFilter.value.includes(set)),
+);
+const recommendedSetsTooltip = computed(
+  () => `Recommended sets: ${recommendedSets.value.map((set) => echoSetLabelMap[set]).join(", ")}`,
+);
 
 const echoesFiltered = computed(() => {
   let allEchoes = echoes.value ?? [];
@@ -585,6 +610,9 @@ function toggleEchoSetFilter(set: string) {
 }
 function isEchoSetFilterActive(set: string) {
   return echoSetFilter.value.includes(set);
+}
+function toggleRecommendedSets() {
+  echoSetFilter.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];
 }
 function getCharsEquipped(item: any) {
   return getEchoEquippedChars(item.echoId);
