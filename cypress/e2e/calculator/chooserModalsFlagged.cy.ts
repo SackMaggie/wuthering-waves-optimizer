@@ -94,7 +94,7 @@ function visitWithTwoSetInventory() {
 }
 
 describe("v3 chooser modals (liveResultBar flag)", () => {
-  it("filters owned echoes by several sets at once, or by the character's recommended sets", () => {
+  it("starts on the character's recommended sets and filters by several sets at once", () => {
     visitWithTwoSetInventory();
     // Roccia recommends Midnight Veil, then Moonlit Clouds (basic.ts suggestedEchoSets).
     cy.selectWorkspaceCharacter("Roccia");
@@ -102,19 +102,22 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
     const count = () => cy.get("[data-test-workspace-echoes-browser-count]");
-    count().should("contain.text", "3 echoes");
+    const set = (key: string) => cy.get(`[data-test-workspace-echoes-browser-set="${key}"]`);
 
-    cy.get("[data-test-workspace-echoes-browser-set]").first().should("have.attr", "data-test-workspace-echoes-browser-set", "MidnightVeil");
-    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     count().should("contain.text", "1 echo");
+    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").should("have.class", "btn-active");
+    set("MidnightVeil").should("have.class", "btn-active");
+    set("FreezingFrost").should("have.class", "grayscale");
+
     cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     count().should("contain.text", "3 echoes");
+    set("FreezingFrost").should("not.have.class", "grayscale");
 
-    cy.get('[data-test-workspace-echoes-browser-set="FreezingFrost"]').click({ force: true });
+    set("FreezingFrost").click({ force: true });
     count().should("contain.text", "2 echoes");
-    cy.get('[data-test-workspace-echoes-browser-set="MidnightVeil"]').click({ force: true });
+    set("MidnightVeil").click({ force: true });
     count().should("contain.text", "3 echoes");
-    cy.get('[data-test-workspace-echoes-browser-set="FreezingFrost"]').click({ force: true });
+    set("FreezingFrost").click({ force: true });
     count().should("contain.text", "1 echo");
   });
 
@@ -180,6 +183,8 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     // Open the slot editor, then its Browse action.
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    // Start from every set: Carlotta's recommended set (selected by default) isn't in the seed.
+    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     // Both seeded echoes are candidates for the empty slot, and each gets a
@@ -223,6 +228,8 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
 
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    // Start from every set: Carlotta's recommended set (selected by default) isn't in the seed.
+    cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     cy.get("[data-test-workspace-echoes-browser-sort]").select("impact", { force: true });

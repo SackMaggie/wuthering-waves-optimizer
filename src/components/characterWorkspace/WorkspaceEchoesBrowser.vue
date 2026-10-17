@@ -119,8 +119,8 @@
               :key="setKey"
               type="button"
               @click="toggleEchoSetFilter(setKey)"
-              class="rounded mr-1 p-[.3rem]"
-              :class="[setKey, { 'btn-active': isEchoSetFilterActive(setKey) }]"
+              class="rounded mr-1 p-[.3rem] transition"
+              :class="[setKey, setButtonClass(setKey)]"
               :data-test-workspace-echoes-browser-set="setKey">
               <img :src="getEchoSetImage(setKey)" class="size-7" :class="setKey" />
             </button>
@@ -329,14 +329,19 @@ watch(
   },
 );
 
-// The character's recommended sets (only ones the app knows) lead the row.
+// The character's recommended sets (only ones the app knows). The set filter starts on
+// them; the row keeps one fixed order for every character.
 const recommendedSets = computed(() =>
   (props.suggestedEchoSets ?? []).filter((set) => set in echoSetLabelMap),
 );
-const echoSetsList = computed(() => [
-  ...recommendedSets.value,
-  ...Object.keys(echoSetLabelMap).filter((set) => !recommendedSets.value.includes(set)),
-]);
+watch(
+  () => recommendedSets.value.join(","),
+  () => {
+    echoSetFilter.value = [...recommendedSets.value];
+  },
+  { immediate: true },
+);
+const echoSetsList = Object.keys(echoSetLabelMap);
 const isRecommendedSetFilter = computed(
   () =>
     echoSetFilter.value.length === recommendedSets.value.length &&
@@ -610,6 +615,11 @@ function toggleEchoSetFilter(set: string) {
 }
 function isEchoSetFilterActive(set: string) {
   return echoSetFilter.value.includes(set);
+}
+/** Selected sets light up with a border; while any set is selected, the rest grey out. */
+function setButtonClass(set: string) {
+  if (isEchoSetFilterActive(set)) return "btn-active ring-1 ring-base-content/50";
+  return echoSetFilter.value.length ? "grayscale opacity-40 hover:grayscale-0 hover:opacity-100" : "";
 }
 function toggleRecommendedSets() {
   echoSetFilter.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];
