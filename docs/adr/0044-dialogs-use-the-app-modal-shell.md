@@ -5,7 +5,7 @@ tags: [components, ui]
 supersedes: [26, 27]
 ---
 
-# 43. Dialogs with a close button use the `AppModal` shell
+# 44. Dialogs with a close button use the `AppModal` shell
 
 ## Context
 
