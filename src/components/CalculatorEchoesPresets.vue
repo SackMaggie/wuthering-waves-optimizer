@@ -1,11 +1,11 @@
 <template>
-  <AppChooserModal
+  <AppModal
     id="modal-echoes-presets"
     ref="modalRef"
     :title="isV3 ? 'Echo presets' : 'Choose a preset to apply to your build'"
     max-width-class="max-w-5xl">
     <!--
-      Cards only mount while the dialog is open (AppChooserModal is lazy).
+      Cards only mount while the dialog is open (AppModal is lazy).
       This component itself is mounted for the whole time the Echoes tab is,
       and each v3 card runs real damage/stat calculations against the
       character's *current* build — computed once at mount they went stale
@@ -127,7 +127,7 @@
         </template>
       </div>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -137,7 +137,7 @@ import { useCharacterStore } from "../stores/character";
 import { useInventoryStore } from "../stores/inventory";
 import EchoCustomPreset from "./EchoCustomPreset.vue";
 import EchoPresetV3Card from "./EchoPresetV3Card.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import { useSettingsStore } from "../stores/settings";
 import { isV3UiEnabled } from "../utils/uiVersion";
 import {
@@ -203,7 +203,7 @@ function waitForUiPaint() {
   });
 }
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 const hasDefaultEchoPresets = computed(() => defaultEchoPresets.value.length > 0);
 const hasEchoPresets = computed(() => (echoPresets.value?.length ?? 0) > 0);

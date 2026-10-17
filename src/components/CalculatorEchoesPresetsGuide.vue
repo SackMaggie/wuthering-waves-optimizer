@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal ref="modalRef" title="Presets Guide" max-width-class="max-w-5xl" :lazy="false">
+  <AppModal ref="modalRef" title="Presets Guide" max-width-class="max-w-5xl" :lazy="false">
     <p class="mt-2">
       This is a quick guide to help you understand how presets work so you
       can use them well.
@@ -57,14 +57,14 @@
       Note that Other (app-provided) presets aren't using echoes from your
       inventory, but you can save them if you want.
     </p>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
-const modalRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalRef = ref<InstanceType<typeof AppModal> | null>(null);
 
 function triggerOpenModal() {
   modalRef.value?.triggerOpenModal();

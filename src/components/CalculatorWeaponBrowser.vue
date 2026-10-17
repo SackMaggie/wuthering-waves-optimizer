@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal
+  <AppModal
     ref="modalElementRef"
     title="Browse weapons"
     max-width-class="max-w-5xl"
@@ -93,14 +93,14 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import CalculatorWeaponCard from "./CalculatorWeaponCard.vue";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 import { sortWeaponsWithSignatureFirst } from "../weapons/weaponSort";
 
 type WeaponRow = { key: string; name: string; rarity?: number; [k: string]: unknown };
@@ -121,7 +121,7 @@ const emit = defineEmits<{
   "weapon-browser:chosen-weapon": [key: string];
 }>();
 
-const modalElementRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const modalElementRef = ref<InstanceType<typeof AppModal> | null>(null);
 const filterRarity = ref<number | null>(null);
 
 const weaponsListFormatted = computed(() => {

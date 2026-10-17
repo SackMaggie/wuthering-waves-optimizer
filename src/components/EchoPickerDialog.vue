@@ -1,5 +1,5 @@
 <template>
-  <AppChooserModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="resetFilters">
+  <AppModal ref="pickerRef" title="Choose echo" max-width-class="max-w-5xl" @close="resetFilters">
     <AppFilterPanel
       panel-key="echo-edit-picker"
       class="mb-4"
@@ -91,7 +91,7 @@
         </div>
       </template>
     </div>
-  </AppChooserModal>
+  </AppModal>
 </template>
 
 <script setup lang="ts">
@@ -107,7 +107,7 @@ import { useEchoInventory } from "../composables/useEchoInventory";
 import { getEchoSetIconByType, echoSetLabelMap } from "../echoes/stats";
 import { mainEchoesData, getCostByClass } from "../echoes/index.ts";
 import AppFilterPanel from "./AppFilterPanel.vue";
-import AppChooserModal from "./AppChooserModal.vue";
+import AppModal from "./AppModal.vue";
 
 defineOptions({ name: "EchoPickerDialog" });
 
@@ -124,7 +124,7 @@ function getEchoSetIcon(type: string) {
   return getEchoSetIconByType(type);
 }
 
-const pickerRef = ref<InstanceType<typeof AppChooserModal> | null>(null);
+const pickerRef = ref<InstanceType<typeof AppModal> | null>(null);
 const echoSetFilter = ref<string | null>(null);
 const echoSearch = ref("");
 const echoCostFilter = ref<number | null>(null);
