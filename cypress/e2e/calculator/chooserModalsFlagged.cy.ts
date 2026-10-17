@@ -94,6 +94,23 @@ function visitWithTwoSetInventory() {
 }
 
 describe("v3 chooser modals (liveResultBar flag)", () => {
+  it("filters owned echoes by several sets at once", () => {
+    visitWithTwoSetInventory();
+    cy.selectWorkspaceCharacter("Carlotta");
+    cy.get('[data-test-calculator-nav="echoes"]').click();
+    cy.get('[data-test-echo-item="0"]').click();
+    cy.get("[data-test-echo-edit-browse]").click({ force: true });
+    const count = () => cy.get("[data-test-workspace-echoes-browser-count]");
+    count().should("contain.text", "3 echoes");
+
+    cy.get('[data-test-workspace-echoes-browser-set="FreezingFrost"]').click({ force: true });
+    count().should("contain.text", "2 echoes");
+    cy.get('[data-test-workspace-echoes-browser-set="MidnightVeil"]').click({ force: true });
+    count().should("contain.text", "3 echoes");
+    cy.get('[data-test-workspace-echoes-browser-set="FreezingFrost"]').click({ force: true });
+    count().should("contain.text", "1 echo");
+  });
+
   it("picks a character through the shared shell, using the preserved selectors", () => {
     visitWithFlagEnabled();
     // Uses the shared command — proves the selector contract still holds.
