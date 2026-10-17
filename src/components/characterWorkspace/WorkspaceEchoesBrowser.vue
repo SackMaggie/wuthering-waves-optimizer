@@ -329,18 +329,10 @@ watch(
   },
 );
 
-// The character's recommended sets (only ones the app knows). The set filter starts on
-// them; the row keeps one fixed order for every character.
-const recommendedSets = computed(() =>
-  (props.suggestedEchoSets ?? []).filter((set) => set in echoSetLabelMap),
-);
-watch(
-  () => recommendedSets.value.join(","),
-  () => {
-    echoSetFilter.value = [...recommendedSets.value];
-  },
-  { immediate: true },
-);
+// The set filter starts on the character's recommended sets; the row keeps one
+// fixed order for every character.
+const recommendedSets = computed(() => props.suggestedEchoSets ?? []);
+watch(recommendedSets, (sets) => (echoSetFilter.value = [...sets]), { immediate: true });
 const echoSetsList = Object.keys(echoSetLabelMap);
 const isRecommendedSetFilter = computed(
   () =>
