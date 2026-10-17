@@ -111,20 +111,7 @@
             @click="toggleRecommendedSets">
             Recommended
           </button>
-          <div
-            class="echo-filters__sets flex flex-wrap"
-            :class="{ 'echo-filters__sets--active': echoSetFilter.length > 0 }">
-            <button
-              v-for="setKey in echoSetsList"
-              :key="setKey"
-              type="button"
-              @click="toggleEchoSetFilter(setKey)"
-              class="rounded mr-1 p-[.3rem] transition"
-              :class="[setKey, setButtonClass(setKey)]"
-              :data-test-workspace-echoes-browser-set="setKey">
-              <img :src="getEchoSetImage(setKey)" class="size-7" :class="setKey" />
-            </button>
-          </div>
+          <EchoSetToggles :sets="echoSetsList" :selected="echoSetFilter" @toggle="toggleEchoSetFilter" />
         </div>
       </AppFilterPanel>
 
@@ -224,7 +211,6 @@ import {
   ECHO_RV_MAX,
   getEchoCritValue,
   getEchoRollValue,
-  getEchoSetIconByType,
   getEchoSubStatEntries,
   getReadableSubStatLabel,
   echoSetLabelMap,
@@ -248,6 +234,7 @@ import EchoRatingRangeFilters from "../EchoRatingRangeFilters.vue";
 import PaginationControls from "../PaginationControls.vue";
 import AppRichSelect, { type AppRichSelectOption } from "../AppRichSelect.vue";
 import AppFilterPanel from "../AppFilterPanel.vue";
+import EchoSetToggles from "../EchoSetToggles.vue";
 import AppChooserModal from "../AppChooserModal.vue";
 import {
   buildEchoSelectOptions,
@@ -597,21 +584,10 @@ function resetFilters() {
   ratingMax.value = RATING_PERCENT_MAX;
 }
 
-function getEchoSetImage(set: string) {
-  return getEchoSetIconByType(set);
-}
 function toggleEchoSetFilter(set: string) {
-  echoSetFilter.value = isEchoSetFilterActive(set)
+  echoSetFilter.value = echoSetFilter.value.includes(set)
     ? echoSetFilter.value.filter((selected) => selected !== set)
     : [...echoSetFilter.value, set];
-}
-function isEchoSetFilterActive(set: string) {
-  return echoSetFilter.value.includes(set);
-}
-/** Selected sets light up with a border; while any set is selected, the rest grey out. */
-function setButtonClass(set: string) {
-  if (isEchoSetFilterActive(set)) return "btn-active ring-1 ring-base-content/50";
-  return echoSetFilter.value.length ? "grayscale opacity-40 hover:grayscale-0 hover:opacity-100" : "";
 }
 function toggleRecommendedSets() {
   echoSetFilter.value = isRecommendedSetFilter.value ? [] : [...recommendedSets.value];

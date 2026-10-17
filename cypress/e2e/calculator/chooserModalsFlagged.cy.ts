@@ -102,16 +102,16 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get('[data-test-echo-item="0"]').click();
     cy.get("[data-test-echo-edit-browse]").click({ force: true });
     const count = () => cy.get("[data-test-workspace-echoes-browser-count]");
-    const set = (key: string) => cy.get(`[data-test-workspace-echoes-browser-set="${key}"]`);
+    const set = (key: string) => cy.get(`[data-test-echo-set-toggle="${key}"]`);
 
     count().should("contain.text", "1 echo");
     cy.get("[data-test-workspace-echoes-browser-recommended-sets]").should("have.class", "btn-active");
-    set("MidnightVeil").should("have.class", "btn-active");
-    set("FreezingFrost").should("have.class", "grayscale");
+    set("MidnightVeil").should("have.attr", "aria-pressed", "true");
+    set("FreezingFrost").should("have.class", "opacity-40");
 
     cy.get("[data-test-workspace-echoes-browser-recommended-sets]").click({ force: true });
     count().should("contain.text", "3 echoes");
-    set("FreezingFrost").should("not.have.class", "grayscale");
+    set("FreezingFrost").should("not.have.class", "opacity-40");
 
     set("FreezingFrost").click({ force: true });
     count().should("contain.text", "2 echoes");
@@ -233,7 +233,7 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     cy.get("[data-test-workspace-echoes-browser-list]").should("exist");
 
     cy.get("[data-test-workspace-echoes-browser-sort]").select("impact", { force: true });
-    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
+    cy.get('[data-test-echo-set-toggle="MidnightVeil"]').click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-impact='chooser-other-set']", {
       timeout: 15000,
     }).should("exist");
@@ -250,8 +250,8 @@ describe("v3 chooser modals (liveResultBar flag)", () => {
     // Filter changes to FreezingFrost without ever touching sortBy (still
     // "impact") or closing the modal — both of its echoes must still get
     // badges.
-    cy.get(".echo-filters__sets button.MidnightVeil").click({ force: true });
-    cy.get(".echo-filters__sets button.FreezingFrost").click({ force: true });
+    cy.get('[data-test-echo-set-toggle="MidnightVeil"]').click({ force: true });
+    cy.get('[data-test-echo-set-toggle="FreezingFrost"]').click({ force: true });
     cy.get("[data-test-workspace-echoes-browser-impact='chooser-strong']", {
       timeout: 15000,
     }).should("exist");
