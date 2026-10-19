@@ -13,5 +13,9 @@ describe("Dialog scrollbar gutter", () => {
       expect(root.scrollbarGutter).to.eq("auto");
       expect(root.overflow).to.not.eq("hidden");
     });
+    // The page stays scrollable, so daisyUI's overscroll containment is what keeps
+    // wheel scrolling over the backdrop or past the dialog's end off the page.
+    cy.get(".modal[open]").should("have.css", "overscroll-behavior-y", "contain");
+    cy.get(".modal[open] .modal-box").should("have.css", "overscroll-behavior-y", "contain");
   });
 });
